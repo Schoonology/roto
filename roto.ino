@@ -1,9 +1,9 @@
 /* Copyright (c) 2018 Peter Teichman */
 
 #include <Audio.h>
-#include <Wire.h>
 #include <SPI.h>
 #include <SerialFlash.h>
+#include <Wire.h>
 
 #include "amfm_audio.h"
 #include "manual.h"
@@ -88,8 +88,15 @@ uint8_t midiControl[127] = {0};
 
 #define CC_SWELL (11)
 #define CC_RESET (46)
-#define CC_DRAWBAR_0 (69)
-#define CC_DRAWBAR_9 (CC_DRAWBAR_0 + 9)
+#define CC_DRAWBAR_1 (73)
+#define CC_DRAWBAR_2 (75)
+#define CC_DRAWBAR_3 (72)
+#define CC_DRAWBAR_4 (91)
+#define CC_DRAWBAR_5 (92)
+#define CC_DRAWBAR_6 (93)
+#define CC_DRAWBAR_7 (94)
+#define CC_DRAWBAR_8 (95)
+#define CC_DRAWBAR_9 (7)
 #define CC_ROTARY_SPEED (82)
 #define CC_ROTARY_STOP (79)
 #define CC_VIBRATO_MODE (84)
@@ -119,10 +126,10 @@ void reset() {
     memset(midiControl, 0, 127);
 
     // Set drawbars to Green Onions.
-    midiControl[CC_DRAWBAR_0 + 1] = 127;
-    midiControl[CC_DRAWBAR_0 + 2] = 127;
-    midiControl[CC_DRAWBAR_0 + 3] = 127;
-    midiControl[CC_DRAWBAR_0 + 4] = 127;
+    midiControl[CC_DRAWBAR_1] = 127;
+    midiControl[CC_DRAWBAR_2] = 127;
+    midiControl[CC_DRAWBAR_3] = 127;
+    midiControl[CC_DRAWBAR_4] = 127;
 
     // Minimal drive by default.
     midiControl[CC_SPEAKER_DRIVE] = 0;
@@ -157,38 +164,38 @@ void preset(int conf) {
 
     switch (conf) {
     case NO_TONEWHEEL:
-        midiControl[CC_DRAWBAR_0 + 1] = 0;
-        midiControl[CC_DRAWBAR_0 + 2] = 0;
-        midiControl[CC_DRAWBAR_0 + 3] = 0;
-        midiControl[CC_DRAWBAR_0 + 4] = 0;
-        midiControl[CC_DRAWBAR_0 + 5] = 0;
-        midiControl[CC_DRAWBAR_0 + 6] = 0;
-        midiControl[CC_DRAWBAR_0 + 7] = 0;
-        midiControl[CC_DRAWBAR_0 + 8] = 0;
-        midiControl[CC_DRAWBAR_0 + 9] = 0;
+        midiControl[CC_DRAWBAR_1] = 0;
+        midiControl[CC_DRAWBAR_2] = 0;
+        midiControl[CC_DRAWBAR_3] = 0;
+        midiControl[CC_DRAWBAR_4] = 0;
+        midiControl[CC_DRAWBAR_5] = 0;
+        midiControl[CC_DRAWBAR_6] = 0;
+        midiControl[CC_DRAWBAR_7] = 0;
+        midiControl[CC_DRAWBAR_8] = 0;
+        midiControl[CC_DRAWBAR_9] = 0;
         midiControl[CC_ROTARY_SPEED] = 0;
         break;
     case ONE_TONEWHEEL:
-        midiControl[CC_DRAWBAR_0 + 1] = 0;
-        midiControl[CC_DRAWBAR_0 + 2] = 0;
-        midiControl[CC_DRAWBAR_0 + 3] = 127;
-        midiControl[CC_DRAWBAR_0 + 4] = 0;
-        midiControl[CC_DRAWBAR_0 + 5] = 0;
-        midiControl[CC_DRAWBAR_0 + 6] = 0;
-        midiControl[CC_DRAWBAR_0 + 7] = 0;
-        midiControl[CC_DRAWBAR_0 + 8] = 0;
-        midiControl[CC_DRAWBAR_0 + 9] = 0;
+        midiControl[CC_DRAWBAR_1] = 0;
+        midiControl[CC_DRAWBAR_2] = 0;
+        midiControl[CC_DRAWBAR_3] = 127;
+        midiControl[CC_DRAWBAR_4] = 0;
+        midiControl[CC_DRAWBAR_5] = 0;
+        midiControl[CC_DRAWBAR_6] = 0;
+        midiControl[CC_DRAWBAR_7] = 0;
+        midiControl[CC_DRAWBAR_8] = 0;
+        midiControl[CC_DRAWBAR_9] = 0;
         break;
     case ALL_DRAWBARS:
-        midiControl[CC_DRAWBAR_0 + 1] = 127;
-        midiControl[CC_DRAWBAR_0 + 2] = 127;
-        midiControl[CC_DRAWBAR_0 + 3] = 127;
-        midiControl[CC_DRAWBAR_0 + 4] = 127;
-        midiControl[CC_DRAWBAR_0 + 5] = 127;
-        midiControl[CC_DRAWBAR_0 + 6] = 127;
-        midiControl[CC_DRAWBAR_0 + 7] = 127;
-        midiControl[CC_DRAWBAR_0 + 8] = 127;
-        midiControl[CC_DRAWBAR_0 + 9] = 127;
+        midiControl[CC_DRAWBAR_1] = 127;
+        midiControl[CC_DRAWBAR_2] = 127;
+        midiControl[CC_DRAWBAR_3] = 127;
+        midiControl[CC_DRAWBAR_4] = 127;
+        midiControl[CC_DRAWBAR_5] = 127;
+        midiControl[CC_DRAWBAR_6] = 127;
+        midiControl[CC_DRAWBAR_7] = 127;
+        midiControl[CC_DRAWBAR_8] = 127;
+        midiControl[CC_DRAWBAR_9] = 127;
         break;
     case PERCUSSION:
         midiControl[CC_PERCUSSION] = 127;
@@ -211,15 +218,15 @@ void preset(int conf) {
         break;
     case FULL_POLYPHONY:
         // cheating around what sounds like some overflow / sign errors
-        midiControl[CC_DRAWBAR_0 + 1] = 0;
-        midiControl[CC_DRAWBAR_0 + 2] = 0;
-        midiControl[CC_DRAWBAR_0 + 3] = 0;
-        midiControl[CC_DRAWBAR_0 + 4] = 0;
-        midiControl[CC_DRAWBAR_0 + 5] = 0;
-        midiControl[CC_DRAWBAR_0 + 6] = 127;
-        midiControl[CC_DRAWBAR_0 + 7] = 127;
-        midiControl[CC_DRAWBAR_0 + 8] = 127;
-        midiControl[CC_DRAWBAR_0 + 9] = 127;
+        midiControl[CC_DRAWBAR_1] = 0;
+        midiControl[CC_DRAWBAR_2] = 0;
+        midiControl[CC_DRAWBAR_3] = 0;
+        midiControl[CC_DRAWBAR_4] = 0;
+        midiControl[CC_DRAWBAR_5] = 0;
+        midiControl[CC_DRAWBAR_6] = 127;
+        midiControl[CC_DRAWBAR_7] = 127;
+        midiControl[CC_DRAWBAR_8] = 127;
+        midiControl[CC_DRAWBAR_9] = 127;
         midiControl[CC_ROTARY_SPEED] = 0;
         fullPolyphony();
         break;
@@ -298,9 +305,16 @@ void fullPolyphony() {
 }
 
 void randomDrawbars() {
-    for (int i = 1; i <= 9; i++) {
-        midiControl[CC_DRAWBAR_0 + i] = random(0, 127);
-    }
+    midiControl[CC_DRAWBAR_1] = random(0, 127);
+    midiControl[CC_DRAWBAR_2] = random(0, 127);
+    midiControl[CC_DRAWBAR_3] = random(0, 127);
+    midiControl[CC_DRAWBAR_4] = random(0, 127);
+    midiControl[CC_DRAWBAR_5] = random(0, 127);
+    midiControl[CC_DRAWBAR_6] = random(0, 127);
+    midiControl[CC_DRAWBAR_7] = random(0, 127);
+    midiControl[CC_DRAWBAR_8] = random(0, 127);
+    midiControl[CC_DRAWBAR_9] = random(0, 127);
+
     updateTonewheelVolumes();
 }
 
@@ -400,9 +414,15 @@ uint8_t percBars[10] = {0};
 uint16_t percVolumes[92] = {0};
 
 void updateTonewheelVolumes() {
-    for (int i = 1; i < 10; i++) {
-        bars[i] = manual_quantize_drawbar(midiControl[CC_DRAWBAR_0 + i]);
-    }
+    bars[1] = manual_quantize_drawbar(midiControl[CC_DRAWBAR_1]);
+    bars[2] = manual_quantize_drawbar(midiControl[CC_DRAWBAR_2]);
+    bars[3] = manual_quantize_drawbar(midiControl[CC_DRAWBAR_3]);
+    bars[4] = manual_quantize_drawbar(midiControl[CC_DRAWBAR_4]);
+    bars[5] = manual_quantize_drawbar(midiControl[CC_DRAWBAR_5]);
+    bars[6] = manual_quantize_drawbar(midiControl[CC_DRAWBAR_6]);
+    bars[7] = manual_quantize_drawbar(midiControl[CC_DRAWBAR_7]);
+    bars[8] = manual_quantize_drawbar(midiControl[CC_DRAWBAR_8]);
+    bars[9] = manual_quantize_drawbar(midiControl[CC_DRAWBAR_9]);
 
     if (midiControl[CC_PERCUSSION]) {
         bars[9] = 0;
@@ -499,12 +519,21 @@ void handleControlChange(byte chan, byte ctrl, byte val) {
         updatePercussionEnvelope();
     } else if (ctrl == CC_PERCUSSION_SOFT) {
         updatePercussionEnvelope();
-    } else if (ctrl > CC_DRAWBAR_0 && ctrl <= CC_DRAWBAR_9) {
-        updateTonewheelVolumes();
     } else if (ctrl == CC_ROTARY_STOP || ctrl == CC_ROTARY_SPEED) {
         updateLeslieRotation();
     } else if (ctrl == CC_VIBRATO || ctrl == CC_VIBRATO_MODE) {
         updateVibrato();
+    } else if (
+        ctrl == CC_DRAWBAR_1 ||
+        ctrl == CC_DRAWBAR_2 ||
+        ctrl == CC_DRAWBAR_3 ||
+        ctrl == CC_DRAWBAR_4 ||
+        ctrl == CC_DRAWBAR_5 ||
+        ctrl == CC_DRAWBAR_6 ||
+        ctrl == CC_DRAWBAR_7 ||
+        ctrl == CC_DRAWBAR_8 ||
+        ctrl == CC_DRAWBAR_9) {
+        updateTonewheelVolumes();
     }
 }
 
